@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@layer base {
+    :root {
+        /* Shopee-inspired warm orange palette */
+        --background: 30 30% 98%;
+        --foreground: 20 20% 15%;
+
+        --card: 0 0% 100%;
+        --card-foreground: 20 20% 15%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 20 20% 15%;
+
+        /* Main Shopee orange */
+        --primary: 16 100% 50%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Lighter orange for secondary */
+        --secondary: 28 100% 96%;
+        --secondary-foreground: 16 80% 35%;
+
+        --muted: 30 15% 93%;
+        --muted-foreground: 20 10% 45%;
+
+        --accent: 16 100% 95%;
+        --accent-foreground: 16 80% 40%;
+
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 30 15% 88%;
+        --input: 30 15% 88%;
+        --ring: 16 100% 50%;
+
+        --radius: 0.75rem;
+
+        /* Custom Shopee colors */
+        --shopee-orange: 16 100% 50%;
+        --shopee-orange-light: 16 100% 95%;
+        --shopee-coral: 10 90% 55%;
+        --shopee-red: 0 85% 55%;
+        --success: 145 65% 42%;
+        --success-foreground: 0 0% 100%;
+        --warning: 38 95% 50%;
+        --warning-foreground: 20 20% 15%;
+        --info: 210 100% 50%;
+        --info-foreground: 0 0% 100%;
+
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+        --background: 20 15% 8%;
+        --foreground: 30 15% 95%;
+
+        --card: 20 15% 12%;
+        --card-foreground: 30 15% 95%;
+
+        --popover: 20 15% 12%;
+        --popover-foreground: 30 15% 95%;
+
+        --primary: 16 100% 55%;
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 20 20% 18%;
+        --secondary-foreground: 30 20% 85%;
+
+        --muted: 20 15% 20%;
+        --muted-foreground: 30 10% 60%;
+
+        --accent: 16 60% 20%;
+        --accent-foreground: 16 80% 80%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 20 15% 20%;
+        --input: 20 15% 20%;
+        --ring: 16 100% 55%;
+
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans antialiased;
+        font-family: "Inter", system-ui, sans-serif;
+    }
+}
+
+@layer components {
+    .gradient-shopee {
+        background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--shopee-coral)) 100%);
+    }
+
+    .gradient-shopee-light {
+        background: linear-gradient(
+            135deg,
+            hsl(var(--shopee-orange-light)) 0%,
+            hsl(var(--accent)) 100%
+        );
+    }
+
+    .shadow-shopee {
+        box-shadow: 0 4px 20px -4px hsl(var(--primary) / 0.25);
+    }
+
+    .shadow-card {
+        box-shadow: 0 2px 12px -2px hsl(var(--foreground) / 0.08);
+    }
+
+    .input-glow:focus {
+        box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+    }
+}

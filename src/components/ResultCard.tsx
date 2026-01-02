@@ -1,0 +1,200 @@
+import { CalculationResult, formatRupiah } from "@/lib/calculatePrice";
+import { cn } from "@/lib/utils";
+import { Calculator, Info, Check, Copy, HelpCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "sonner";
+
+interface ResultCardProps {
+    result: CalculationResult | null;
+    desiredNetPrice: number;
+}
+
+interface FeeRowProps {
+    fee: { name: string; percentage: number; amount: number; maxAmount?: number };
+    formatFeeDescription: (fee: { name: string; percentage: number; maxAmount?: number }) => string;
+}
+
+function FeeRow({ fee, formatFeeDescription }: FeeRowProps) {
+    return (
+        <div
+            className={cn(
+                "px-5 py-3 flex items-center justify-between",
+                "hover:bg-muted/30 transition-colors",
+            )}
+        >
+            <div className="flex items-center gap-1.5">
+                <span className="text-sm text-foreground">{fee.name}</span>
+                {fee.percentage > 0 && (
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <HelpCircle className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{formatFeeDescription(fee)}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                )}
+            </div>
+            <span className="font-semibold text-destructive">-{formatRupiah(fee.amount)}</span>
+        </div>
+    );
+}
+
+export function ResultCard({ result, desiredNetPrice }: ResultCardProps) {
+    const copyToClipboard = () => {
+        if (result) {
+            navigator.clipboard.writeText(result.initialPrice.toString());
+            toast.success("Harga berhasil disalin!");
+        }
+    };
+
+    if (!result || desiredNetPrice <= 0) {
+        return (
+            <div className="rounded-2xl border-2 border-dashed border-border p-8 text-center">
+                <Calculator className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                <p className="text-muted-foreground font-medium">
+                    Masukkan harga bersih yang diinginkan untuk melihat hasil perhitungan
+                </p>
+            </div>
+        );
+    }
+
+    const formatFeeDescription = (fee: {
+        name: string;
+        percentage: number;
+        maxAmount?: number;
+    }) => {
+        if (fee.percentage === 0) {
+            return `Biaya tetap`;
+        }
+        let desc = `${fee.percentage}% dari harga produk`;
+        if (fee.maxAmount) {
+            desc += ` (maks. ${formatRupiah(fee.maxAmount)})`;
+        }
+        return desc;
+    };
+
+    return (
+        <div className="animate-fade-in">
+            <div className="bg-card border-2 border-border rounded-2xl overflow-hidden">
+                {/* Harga yang Harus Disetel */}
+                <div
+                    className="gradient-shopee px-5 py-6 text-center cursor-pointer group relative"
+                    onClick={copyToClipboard}
+                >
+                    <p className="text-primary-foreground/80 text-sm font-medium mb-1">
+                        Harga yang Harus Disetel
+                    </p>
+                    <div className="flex items-center justify-center gap-2">
+                        <p className="text-4xl md:text-5xl font-extrabold text-primary-foreground">
+                            {formatRupiah(result.initialPrice)}
+                        </p>
+                        <Copy className="w-5 h-5 text-primary-foreground/60 group-hover:text-primary-foreground transition-colors" />
+                    </div>
+                    <p className="text-primary-foreground/60 text-xs mt-2">Klik untuk menyalin</p>
+                </div>
+
+                {/* Rincian Potongan Header */}
+                <div className="px-5 py-4 border-b border-border bg-muted/30">
+                    <h3 className="font-semibold flex items-center gap-2">
+                        <Info className="w-4 h-4 text-primary" />
+                        Rincian Potongan
+                    </h3>
+                </div>
+
+                {/* Rincian Potongan List */}
+                <div className="divide-y divide-border">
+                    {/* Biaya Administrasi */}
+                    {result.breakdown
+                        .filter((fee) => fee.name === "Biaya Administrasi")
+                        .map((fee, index) => (
+                            <FeeRow
+                                key={`admin-${index}`}
+                                fee={fee}
+                                formatFeeDescription={formatFeeDescription}
+                            />
+                        ))}
+
+                    {/* Premi */}
+                    {result.breakdown
+                        .filter((fee) => fee.name === "Premi")
+                        .map((fee, index) => (
+                            <FeeRow
+                                key={`premi-${index}`}
+                                fee={fee}
+                                formatFeeDescription={formatFeeDescription}
+                            />
+                        ))}
+
+                    {/* Biaya Layanan */}
+                    {result.breakdown.filter(
+                        (fee) =>
+                            fee.name !== "Biaya Administrasi" &&
+                            fee.name !== "Premi" &&
+                            fee.name !== "Biaya Proses Pesanan",
+                    ).length > 0 && (
+                        <div className="px-5 py-2 bg-muted/20">
+                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                                Biaya Layanan
+                            </span>
+                        </div>
+                    )}
+                    {result.breakdown
+                        .filter(
+                            (fee) =>
+                                fee.name !== "Biaya Administrasi" &&
+                                fee.name !== "Premi" &&
+                                fee.name !== "Biaya Proses Pesanan",
+                        )
+                        .map((fee, index) => (
+                            <FeeRow
+                                key={`layanan-${index}`}
+                                fee={fee}
+                                formatFeeDescription={formatFeeDescription}
+                            />
+                        ))}
+
+                    {/* Biaya Proses Pesanan */}
+                    {result.breakdown.filter((fee) => fee.name === "Biaya Proses Pesanan").length >
+                        0 && (
+                        <div className="px-5 py-2 bg-muted/20">
+                            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                                Biaya Proses Pesanan
+                            </span>
+                        </div>
+                    )}
+                    {result.breakdown
+                        .filter((fee) => fee.name === "Biaya Proses Pesanan")
+                        .map((fee, index) => (
+                            <FeeRow
+                                key={`proses-${index}`}
+                                fee={fee}
+                                formatFeeDescription={formatFeeDescription}
+                            />
+                        ))}
+
+                    {/* Total Potongan */}
+                    <div className="px-5 py-4 flex items-center justify-between bg-muted/50 border-t border-border">
+                        <span className="font-bold">Total Potongan</span>
+                        <div className="text-right">
+                            <span className="font-bold text-destructive text-lg">
+                                -{formatRupiah(result.totalFeeAmount)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Harga Bersih */}
+                    <div className="px-5 py-4 flex items-center justify-between bg-success/10">
+                        <span className="font-bold flex items-center gap-2 text-success">
+                            <Check className="w-4 h-4" />
+                            Harga Bersih Diterima
+                        </span>
+                        <span className="font-bold text-success text-xl">
+                            {formatRupiah(result.netPrice)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
