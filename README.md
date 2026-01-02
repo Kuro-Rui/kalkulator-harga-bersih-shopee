@@ -1,3 +1,3 @@
 # Kalkulator Harga Bersih Shopee
 
-> https://kalkulator-shopee.kurui.moe/
+> https://kurui.moe/kalkulator-shopee/
