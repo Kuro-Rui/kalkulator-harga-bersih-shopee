@@ -9,13 +9,7 @@ interface PriceInputProps {
     className?: string;
 }
 
-export function PriceInput({
-    value,
-    onChange,
-    label,
-    placeholder,
-    className,
-}: PriceInputProps) {
+export function PriceInput({ value, onChange, label, placeholder, className }: PriceInputProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
 

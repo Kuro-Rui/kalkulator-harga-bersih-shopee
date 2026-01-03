@@ -33,9 +33,7 @@ const SidebarContext = React.createContext<SidebarContext | null>(null);
 
 function useSidebar() {
     const context = React.useContext(SidebarContext);
-    if (!context) {
-        throw new Error("useSidebar must be used within a SidebarProvider.");
-    }
+    if (!context) throw new Error("useSidebar must be used within a SidebarProvider.");
 
     return context;
 }
@@ -70,11 +68,8 @@ const SidebarProvider = React.forwardRef<
         const setOpen = React.useCallback(
             (value: boolean | ((value: boolean) => boolean)) => {
                 const openState = typeof value === "function" ? value(open) : value;
-                if (setOpenProp) {
-                    setOpenProp(openState);
-                } else {
-                    _setOpen(openState);
-                }
+                if (setOpenProp) setOpenProp(openState);
+                else _setOpen(openState);
 
                 // This sets the cookie to keep the sidebar state.
                 document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
@@ -546,16 +541,9 @@ const SidebarMenuButton = React.forwardRef<
             />
         );
 
-        if (!tooltip) {
-            return button;
-        }
+        if (!tooltip) return button;
 
-        if (typeof tooltip === "string") {
-            tooltip = {
-                children: tooltip,
-            };
-        }
-
+        if (typeof tooltip === "string") tooltip = { children: tooltip };
         return (
             <Tooltip>
                 <TooltipTrigger asChild>{button}</TooltipTrigger>
@@ -732,5 +720,5 @@ export {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,
+    useSidebar,  // eslint-disable-line react-refresh/only-export-components
 };

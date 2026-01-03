@@ -25,9 +25,7 @@ const ChartContext = React.createContext<ChartContextProps | null>(null);
 function useChart() {
     const context = React.useContext(ChartContext);
 
-    if (!context) {
-        throw new Error("useChart must be used within a <ChartContainer />");
-    }
+    if (!context) throw new Error("useChart must be used within a <ChartContainer />");
 
     return context;
 }
@@ -68,9 +66,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
         ([_, config]) => config.theme || config.color,
     );
 
-    if (!colorConfig.length) {
-        return null;
-    }
+    if (!colorConfig.length) return null;
 
     return (
         <style
@@ -129,9 +125,7 @@ const ChartTooltipContent = React.forwardRef<
         const { config } = useChart();
 
         const tooltipLabel = React.useMemo(() => {
-            if (hideLabel || !payload?.length) {
-                return null;
-            }
+            if (hideLabel || !payload?.length) return null;
 
             const [item] = payload;
             const key = `${labelKey || item.dataKey || item.name || "value"}`;
@@ -149,16 +143,12 @@ const ChartTooltipContent = React.forwardRef<
                 );
             }
 
-            if (!value) {
-                return null;
-            }
+            if (!value) return null;
 
             return <div className={cn("font-medium", labelClassName)}>{value}</div>;
         }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey]);
 
-        if (!active || !payload?.length) {
-            return null;
-        }
+        if (!active || !payload?.length) return null;
 
         const nestLabel = payload.length === 1 && indicator !== "dot";
 
@@ -256,9 +246,7 @@ const ChartLegendContent = React.forwardRef<
 >(({ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey }, ref) => {
     const { config } = useChart();
 
-    if (!payload?.length) {
-        return null;
-    }
+    if (!payload?.length) return null;
 
     return (
         <div
@@ -301,9 +289,7 @@ ChartLegendContent.displayName = "ChartLegend";
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
-    if (typeof payload !== "object" || payload === null) {
-        return undefined;
-    }
+    if (typeof payload !== "object" || payload === null) return undefined;
 
     const payloadPayload =
         "payload" in payload && typeof payload.payload === "object" && payload.payload !== null

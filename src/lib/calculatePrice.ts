@@ -60,9 +60,7 @@ export function calculateInitialPrice(input: CalculationInput): CalculationResul
     // Fixed fees (biaya tetap dalam Rupiah)
     let fixedFees = ORDER_PROCESSING_FEE; // Biaya Proses Pesanan selalu dikenakan
 
-    if (isHematBiayaKirim) {
-        fixedFees += HEMAT_BIAYA_KIRIM_FEE;
-    }
+    if (isHematBiayaKirim) fixedFees += HEMAT_BIAYA_KIRIM_FEE;
 
     // Inisialisasi breakdown
     const breakdown: FeeBreakdown[] = [];
@@ -164,21 +162,13 @@ export function calculateInitialPrice(input: CalculationInput): CalculationResul
 
     // Helper function untuk menghitung fee berdasarkan harga
     const calculateFeeAmount = (fee: FeeBreakdown, price: number): number => {
-        if (fee.percentage === 0) {
-            return fee.amount; // Flat fee
-        }
+        if (fee.percentage === 0) return fee.amount; // Flat fee
 
         let feeAmount: number;
-        if (fee.name === "Premi") {
-            feeAmount = Math.ceil((fee.percentage / 100) * price);
-        } else {
-            feeAmount = Math.round((fee.percentage / 100) * price);
-        }
+        if (fee.name === "Premi") feeAmount = Math.ceil((fee.percentage / 100) * price);
+        else feeAmount = Math.round((fee.percentage / 100) * price);
 
-        if (fee.maxAmount && feeAmount > fee.maxAmount) {
-            feeAmount = fee.maxAmount;
-        }
-
+        if (fee.maxAmount && feeAmount > fee.maxAmount) feeAmount = fee.maxAmount;
         return feeAmount;
     };
 
@@ -197,11 +187,7 @@ export function calculateInitialPrice(input: CalculationInput): CalculationResul
 
         // Hitung total fee untuk harga ini
         let totalFee = 0;
-        for (const fee of breakdown) {
-            if (fee.isApplied) {
-                totalFee += calculateFeeAmount(fee, mid);
-            }
-        }
+        for (const fee of breakdown) if (fee.isApplied) totalFee += calculateFeeAmount(fee, mid);
 
         const netPrice = mid - totalFee;
 
@@ -209,9 +195,8 @@ export function calculateInitialPrice(input: CalculationInput): CalculationResul
             bestInitialPrice = mid;
             bestNetPrice = netPrice;
             break;
-        } else if (netPrice < desiredNetPrice) {
-            low = mid + 1;
-        } else {
+        } else if (netPrice < desiredNetPrice) low = mid + 1;
+        else {
             // netPrice > desiredNetPrice, simpan sebagai kandidat dan cari yang lebih kecil
             bestInitialPrice = mid;
             bestNetPrice = netPrice;
@@ -236,9 +221,7 @@ export function calculateInitialPrice(input: CalculationInput): CalculationResul
         if (netPrice >= desiredNetPrice) {
             finalInitialPrice--;
             bestNetPrice = netPrice;
-        } else {
-            break;
-        }
+        } else break;
     }
 
     // Hitung ulang fee dengan harga final

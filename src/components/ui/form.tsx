@@ -44,9 +44,7 @@ const useFormField = () => {
 
     const fieldState = getFieldState(fieldContext.name, formState);
 
-    if (!fieldContext) {
-        throw new Error("useFormField should be used within <FormField>");
-    }
+    if (!fieldContext) throw new Error("useFormField should be used within <FormField>");
 
     const { id } = itemContext;
 
@@ -140,9 +138,7 @@ const FormMessage = React.forwardRef<
     const { error, formMessageId } = useFormField();
     const body = error ? String(error?.message) : children;
 
-    if (!body) {
-        return null;
-    }
+    if (!body) return null;
 
     return (
         <p
@@ -158,7 +154,7 @@ const FormMessage = React.forwardRef<
 FormMessage.displayName = "FormMessage";
 
 export {
-    useFormField,
+    useFormField, // eslint-disable-line react-refresh/only-export-components
     Form,
     FormItem,
     FormLabel,

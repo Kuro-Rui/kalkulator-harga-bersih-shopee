@@ -76,13 +76,9 @@ export function ResultCard({ result, desiredNetPrice, hasCategory }: ResultCardP
         percentage: number;
         maxAmount?: number;
     }) => {
-        if (fee.percentage === 0) {
-            return `Biaya tetap`;
-        }
+        if (fee.percentage === 0) return `Biaya tetap`;
         let desc = `${fee.percentage}% dari harga produk`;
-        if (fee.maxAmount) {
-            desc += ` (maks. ${formatRupiah(fee.maxAmount)})`;
-        }
+        if (fee.maxAmount) desc += ` (maks. ${formatRupiah(fee.maxAmount)})`;
         return desc;
     };
 
