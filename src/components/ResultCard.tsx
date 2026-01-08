@@ -1,6 +1,6 @@
 import { CalculationResult, formatRupiah } from "@/lib/calculatePrice";
 import { cn } from "@/lib/utils";
-import { Calculator, Info, Check, Copy, HelpCircle } from "lucide-react";
+import { Calculator, Info, Check, Copy, HelpCircle, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
@@ -8,6 +8,9 @@ interface ResultCardProps {
     result: CalculationResult | null;
     desiredNetPrice: number;
     hasCategory: boolean;
+    isReverseCalculation?: boolean;
+    minPossibleNetPrice?: number;
+    hideCopy?: boolean;
 }
 
 interface FeeRowProps {
@@ -41,10 +44,18 @@ function FeeRow({ fee, formatFeeDescription }: FeeRowProps) {
     );
 }
 
-export function ResultCard({ result, desiredNetPrice, hasCategory }: ResultCardProps) {
+export function ResultCard({
+    result,
+    desiredNetPrice,
+    hasCategory,
+    isReverseCalculation = true,
+    minPossibleNetPrice,
+    hideCopy = true,
+}: ResultCardProps) {
     const copyToClipboard = () => {
-        if (result) {
-            navigator.clipboard.writeText(result.initialPrice.toString());
+        if (result && !hideCopy) {
+            const valueToCopy = isReverseCalculation ? result.initialPrice : result.netPrice;
+            navigator.clipboard.writeText(valueToCopy.toString());
             toast.success("Harga berhasil disalin!");
         }
     };
@@ -60,12 +71,36 @@ export function ResultCard({ result, desiredNetPrice, hasCategory }: ResultCardP
         );
     }
 
-    if (!result || desiredNetPrice <= 0) {
+    if (!result) {
         return (
             <div className="rounded-2xl border-2 border-dashed border-border p-8 text-center">
                 <Calculator className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
                 <p className="text-muted-foreground font-medium">
-                    Masukkan harga bersih yang diinginkan untuk melihat hasil perhitungan
+                    {isReverseCalculation
+                        ? "Masukkan harga bersih yang diinginkan untuk melihat hasil perhitungan"
+                        : "Masukkan harga awal untuk melihat hasil perhitungan"}
+                </p>
+            </div>
+        );
+    }
+
+    // Untuk mode Hitung Harga Awal, cek apakah input lebih kecil dari minimal yang bisa dicapai
+    const isBelowMinimum =
+        isReverseCalculation &&
+        minPossibleNetPrice !== undefined &&
+        desiredNetPrice < minPossibleNetPrice;
+
+    // Tampilkan error jika harga bersih yang diinginkan lebih kecil dari minimal
+    if (isBelowMinimum) {
+        return (
+            <div className="rounded-2xl border-2 border-destructive/50 bg-destructive/5 p-6 text-center">
+                <AlertCircle className="w-12 h-12 mx-auto text-destructive mb-3" />
+                <p className="text-destructive font-semibold mb-1">
+                    Harga bersih tidak dapat dicapai
+                </p>
+                <p className="text-sm text-muted-foreground">
+                    Minimal total penghasilan {formatRupiah(minPossibleNetPrice!)} untuk konfigurasi
+                    potongan ini
                 </p>
             </div>
         );
@@ -85,21 +120,34 @@ export function ResultCard({ result, desiredNetPrice, hasCategory }: ResultCardP
     return (
         <div className="animate-fade-in">
             <div className="bg-card border-2 border-border rounded-2xl overflow-hidden">
-                {/* Harga yang Harus Disetel */}
+                {/* Header - Harga Utama */}
                 <div
-                    className="gradient-shopee px-5 py-6 text-center cursor-pointer group relative"
-                    onClick={copyToClipboard}
+                    className={cn(
+                        "gradient-shopee px-5 py-6 text-center relative",
+                        !hideCopy && "cursor-pointer group",
+                    )}
+                    onClick={hideCopy ? undefined : copyToClipboard}
                 >
                     <p className="text-primary-foreground/80 text-sm font-medium mb-1">
-                        Harga yang Harus Disetel
+                        {isReverseCalculation
+                            ? "Harga yang Harus Disetel"
+                            : "Harga Bersih yang Diterima"}
                     </p>
                     <div className="flex items-center justify-center gap-2">
                         <p className="text-4xl md:text-5xl font-extrabold text-primary-foreground">
-                            {formatRupiah(result.initialPrice)}
+                            {formatRupiah(
+                                isReverseCalculation ? result.initialPrice : result.netPrice,
+                            )}
                         </p>
-                        <Copy className="w-5 h-5 text-primary-foreground/60 group-hover:text-primary-foreground transition-colors" />
+                        {!hideCopy && (
+                            <Copy className="w-5 h-5 text-primary-foreground/60 group-hover:text-primary-foreground transition-colors" />
+                        )}
                     </div>
-                    <p className="text-primary-foreground/60 text-xs mt-2">Klik untuk menyalin</p>
+                    {!hideCopy && (
+                        <p className="text-primary-foreground/60 text-xs mt-2">
+                            Klik untuk menyalin
+                        </p>
+                    )}
                 </div>
 
                 {/* Rincian Potongan Header */}
@@ -191,11 +239,11 @@ export function ResultCard({ result, desiredNetPrice, hasCategory }: ResultCardP
                         </div>
                     </div>
 
-                    {/* Harga Bersih */}
+                    {/* Footer - Harga Sekunder */}
                     <div className="px-5 py-4 flex items-center justify-between bg-success/10">
                         <span className="font-bold flex items-center gap-2 text-success">
                             <Check className="w-4 h-4" />
-                            Harga Bersih Diterima
+                            Estimasi Total Penghasilan
                         </span>
                         <span className="font-bold text-success text-xl">
                             {formatRupiah(result.netPrice)}

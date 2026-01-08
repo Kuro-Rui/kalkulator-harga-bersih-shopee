@@ -2,27 +2,76 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 interface PriceInputProps {
-    value: number;
-    onChange: (value: number) => void;
+    value: number | null;
+    onChange: (value: number | null) => void;
     label: string;
     placeholder?: string;
     className?: string;
+    min?: number;
+    max?: number;
 }
 
-export function PriceInput({ value, onChange, label, placeholder, className }: PriceInputProps) {
+export function PriceInput({
+    value,
+    onChange,
+    label,
+    placeholder = "Masukkan harga...",
+    className,
+    min,
+    max,
+}: PriceInputProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
+
+        // Jika kosong, set ke null marker
+        if (inputValue === "" || inputValue === "Rp" || inputValue === "Rp ") {
+            onChange(null);
+            return;
+        }
+
+        // Jika hanya "-", set marker untuk minus saja
+        if (inputValue === "-") {
+            onChange(-0.001);
+            return;
+        }
 
         // Izinkan minus di awal dan angka saja
         const isNegative = inputValue.startsWith("-");
         const rawValue = inputValue.replace(/[^\d]/g, "");
-        const numValue = parseInt(rawValue, 10) || 0;
 
+        if (rawValue === "") {
+            onChange(isNegative ? -0.001 : null);
+            return;
+        }
+
+        const numValue = parseInt(rawValue, 10);
         onChange(isNegative ? -numValue : numValue);
     };
 
-    const displayValue =
-        value !== 0 ? (value < 0 ? "-" : "") + Math.abs(value).toLocaleString("id-ID") : "";
+    const displayValue = (() => {
+        if (value === null || value === undefined) return "";
+        if (value === -0.001) return "-";
+        if (value === 0) return "0";
+        return (value < 0 ? "-" : "") + Math.abs(value).toLocaleString("id-ID");
+    })();
+
+    const isOutOfRange = (() => {
+        if (value === null || value === -0.001) return false;
+        if (min !== undefined && value < min) return true;
+        if (max !== undefined && value > max) return true;
+        return false;
+    })();
+
+    const errorMessage = (() => {
+        if (value === null || value === -0.001) return null;
+        if (min !== undefined && value < min) {
+            return `Harga minimal Rp${min.toLocaleString("id-ID")}`;
+        }
+        if (max !== undefined && value > max) {
+            return `Harga maksimal Rp${max.toLocaleString("id-ID")}`;
+        }
+        return null;
+    })();
 
     return (
         <div className={cn("space-y-3", className)}>
@@ -33,13 +82,17 @@ export function PriceInput({ value, onChange, label, placeholder, className }: P
                 </span>
                 <Input
                     type="text"
-                    inputMode="text"
+                    inputMode="numeric"
                     value={displayValue}
                     onChange={handleChange}
                     placeholder={placeholder}
-                    className="h-14 pl-12 pr-4 text-lg font-semibold bg-card border-2 border-border hover:border-primary/50 focus:border-primary input-glow transition-colors"
+                    className={cn(
+                        "h-14 pl-12 pr-4 text-lg font-semibold bg-card border-2 border-border hover:border-primary/50 focus:border-primary input-glow transition-colors",
+                        isOutOfRange && "border-destructive focus:border-destructive",
+                    )}
                 />
             </div>
+            {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
         </div>
     );
 }

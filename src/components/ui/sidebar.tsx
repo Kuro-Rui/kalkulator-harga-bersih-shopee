@@ -34,7 +34,6 @@ const SidebarContext = React.createContext<SidebarContext | null>(null);
 function useSidebar() {
     const context = React.useContext(SidebarContext);
     if (!context) throw new Error("useSidebar must be used within a SidebarProvider.");
-
     return context;
 }
 
@@ -542,7 +541,6 @@ const SidebarMenuButton = React.forwardRef<
         );
 
         if (!tooltip) return button;
-
         if (typeof tooltip === "string") tooltip = { children: tooltip };
         return (
             <Tooltip>
@@ -720,5 +718,5 @@ export {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,  // eslint-disable-line react-refresh/only-export-components
+    useSidebar, // eslint-disable-line react-refresh/only-export-components
 };
