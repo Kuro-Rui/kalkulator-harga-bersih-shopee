@@ -36,7 +36,7 @@ export function ShopeeCalculator() {
         if (result && !isReverseCalculation) {
             navigator.clipboard.writeText(result.netPrice.toString());
             setCopiedInput(true);
-            toast.success("Harga bersih berhasil disalin!");
+            toast.success("Harga berhasil disalin!");
             setTimeout(() => setCopiedInput(false), 2000);
         }
     };
@@ -302,7 +302,6 @@ export function ShopeeCalculator() {
                                 desiredNetPrice={0}
                                 hasCategory={!!category}
                                 isReverseCalculation={isReverseCalculation}
-                                hideCopy={true}
                             />
                         )
                     ) : (
@@ -314,6 +313,7 @@ export function ShopeeCalculator() {
                             hasCategory={!!category}
                             isReverseCalculation={isReverseCalculation}
                             minPossibleNetPrice={minPossibleNetPrice}
+                            hideCopy={false}
                         />
                     )}
                 </section>
