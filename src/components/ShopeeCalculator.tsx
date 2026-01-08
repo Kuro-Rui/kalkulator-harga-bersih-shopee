@@ -152,102 +152,105 @@ export function ShopeeCalculator() {
                     </div>
 
                     {category && (
-                        <div className="border-t border-border pt-6 space-y-3">
-                            <label className="block text-sm font-semibold text-foreground">
-                                Program & Kondisi
-                            </label>
-                            <div className="space-y-3">
-                                <ProgramToggle
-                                    icon={Package}
-                                    title="Pre-Order > 30 Hari"
-                                    description="Produk PO yang sudah diupload lebih dari 30 hari"
-                                    badge="+3%"
-                                    checked={isPreOrder30Days}
-                                    onChange={setIsPreOrder30Days}
-                                />
-                                <ProgramToggle
-                                    icon={Shield}
-                                    title="Asuransi Pengiriman"
-                                    description="Produk terdaftar dalam program asuransi pengiriman"
-                                    badge="+0.5%"
-                                    checked={isShippingInsurance}
-                                    onChange={setIsShippingInsurance}
-                                />
-                                <ProgramToggle
-                                    icon={Truck}
-                                    title="Gratis Ongkir XTRA"
-                                    description="Tergabung dalam program & sudah menyelesaikan min. 500 pesanan"
-                                    badge={
-                                        category?.freeShippingFee
-                                            ? `+${category.freeShippingFee}%`
-                                            : undefined
-                                    }
-                                    checked={isFreeShippingXtra}
-                                    onChange={setIsFreeShippingXtra}
-                                    disabled={!category?.freeShippingFee}
-                                />
-                                <ProgramToggle
-                                    icon={Percent}
-                                    title="Promo XTRA"
-                                    description="Tergabung dalam program Promo XTRA untuk subsidi voucher diskon"
-                                    badge="+4.5% (maks. 60rb)"
-                                    checked={isPromoXtra}
-                                    onChange={setIsPromoXtra}
-                                />
-                                <ProgramToggle
-                                    icon={Video}
-                                    title="Shopee Live XTRA"
-                                    description="Penjualan melalui sesi streaming Shopee Live"
-                                    badge="+3% (maks. 20rb)"
-                                    checked={isShopeLiveXtra}
-                                    onChange={setIsShopeLiveXtra}
-                                />
-                                <ProgramToggle
-                                    icon={Wallet}
-                                    title="Hemat Biaya Kirim"
-                                    description="Penjual tergabung dalam program Hemat Biaya Kirim"
-                                    badge="+Rp350"
-                                    checked={isHematBiayaKirim}
-                                    onChange={setIsHematBiayaKirim}
-                                />
-                                {/* Mode Toggle */}
-                                <div className="border-t border-border pt-6">
-                                    <label className="block text-sm font-semibold text-foreground mb-3">
-                                        Mode Perhitungan
-                                    </label>
-                                    <div className="flex bg-muted rounded-lg p-1">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsReverseCalculation(false);
-                                                setInputPrice(null);
-                                            }}
-                                            className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all ${
-                                                !isReverseCalculation
-                                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:text-foreground"
-                                            }`}
-                                        >
-                                            Hitung Harga Bersih
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsReverseCalculation(true);
-                                                setInputPrice(null);
-                                            }}
-                                            className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all ${
-                                                isReverseCalculation
-                                                    ? "bg-primary text-primary-foreground shadow-sm"
-                                                    : "text-muted-foreground hover:text-foreground"
-                                            }`}
-                                        >
-                                            Hitung Harga Awal
-                                        </button>
-                                    </div>
+                        <>
+                            <div className="border-t border-border pt-6 space-y-3">
+                                <label className="block text-sm font-semibold text-foreground">
+                                    Program & Kondisi
+                                </label>
+                                <div className="space-y-3">
+                                    <ProgramToggle
+                                        icon={Package}
+                                        title="Pre-Order > 30 Hari"
+                                        description="Produk PO yang sudah diupload lebih dari 30 hari"
+                                        badge="+3%"
+                                        checked={isPreOrder30Days}
+                                        onChange={setIsPreOrder30Days}
+                                    />
+                                    <ProgramToggle
+                                        icon={Shield}
+                                        title="Asuransi Pengiriman"
+                                        description="Produk terdaftar dalam program asuransi pengiriman"
+                                        badge="+0.5%"
+                                        checked={isShippingInsurance}
+                                        onChange={setIsShippingInsurance}
+                                    />
+                                    <ProgramToggle
+                                        icon={Truck}
+                                        title="Gratis Ongkir XTRA"
+                                        description="Tergabung dalam program & sudah menyelesaikan min. 500 pesanan"
+                                        badge={
+                                            category?.freeShippingFee
+                                                ? `+${category.freeShippingFee}%`
+                                                : undefined
+                                        }
+                                        checked={isFreeShippingXtra}
+                                        onChange={setIsFreeShippingXtra}
+                                        disabled={!category?.freeShippingFee}
+                                    />
+                                    <ProgramToggle
+                                        icon={Percent}
+                                        title="Promo XTRA"
+                                        description="Tergabung dalam program Promo XTRA untuk subsidi voucher diskon"
+                                        badge="+4.5% (maks. 60rb)"
+                                        checked={isPromoXtra}
+                                        onChange={setIsPromoXtra}
+                                    />
+                                    <ProgramToggle
+                                        icon={Video}
+                                        title="Shopee Live XTRA"
+                                        description="Penjualan melalui sesi streaming Shopee Live"
+                                        badge="+3% (maks. 20rb)"
+                                        checked={isShopeLiveXtra}
+                                        onChange={setIsShopeLiveXtra}
+                                    />
+                                    <ProgramToggle
+                                        icon={Wallet}
+                                        title="Hemat Biaya Kirim"
+                                        description="Penjual tergabung dalam program Hemat Biaya Kirim"
+                                        badge="+Rp350"
+                                        checked={isHematBiayaKirim}
+                                        onChange={setIsHematBiayaKirim}
+                                    />
                                 </div>
                             </div>
-                        </div>
+
+                            {/* Mode Toggle */}
+                            <div className="border-t border-border pt-6">
+                                <label className="block text-sm font-semibold text-foreground mb-3">
+                                    Mode Perhitungan
+                                </label>
+                                <div className="flex bg-muted rounded-lg p-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsReverseCalculation(false);
+                                            setInputPrice(null);
+                                        }}
+                                        className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all ${
+                                            isReverseCalculation
+                                                ? "text-muted-foreground hover:text-foreground"
+                                                : "bg-primary text-primary-foreground shadow-sm"
+                                        }`}
+                                    >
+                                        Hitung Harga Bersih
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsReverseCalculation(true);
+                                            setInputPrice(null);
+                                        }}
+                                        className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all ${
+                                            isReverseCalculation
+                                                ? "bg-primary text-primary-foreground shadow-sm"
+                                                : "text-muted-foreground hover:text-foreground"
+                                        }`}
+                                    >
+                                        Hitung Harga Awal
+                                    </button>
+                                </div>
+                            </div>
+                        </>
                     )}
 
                     {category && (
@@ -291,20 +294,7 @@ export function ShopeeCalculator() {
 
                 {/* Result Section - show for both modes */}
                 <section>
-                    {!isReverseCalculation ? (
-                        result &&
-                        inputPrice !== null &&
-                        inputPrice !== -0.001 &&
-                        inputPrice >= 99 &&
-                        inputPrice <= 150000000 && (
-                            <ResultCard
-                                result={result}
-                                desiredNetPrice={0}
-                                hasCategory={!!category}
-                                isReverseCalculation={isReverseCalculation}
-                            />
-                        )
-                    ) : (
+                    {isReverseCalculation ? (
                         <ResultCard
                             result={result}
                             desiredNetPrice={
@@ -314,6 +304,13 @@ export function ShopeeCalculator() {
                             isReverseCalculation={isReverseCalculation}
                             minPossibleNetPrice={minPossibleNetPrice}
                             hideCopy={false}
+                        />
+                    ) : (
+                        <ResultCard
+                            result={result}
+                            desiredNetPrice={0}
+                            hasCategory={!!category}
+                            isReverseCalculation={isReverseCalculation}
                         />
                     )}
                 </section>
