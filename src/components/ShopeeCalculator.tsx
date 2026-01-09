@@ -99,8 +99,6 @@ export function ShopeeCalculator() {
         // Abaikan marker untuk minus saja atau null
         const priceValue = inputPrice === -0.001 || inputPrice === null ? null : inputPrice;
         if (!category || priceValue === null) return null;
-        // Untuk mode Hitung Harga Bersih, harus dalam range valid
-        if (!isReverseCalculation && (priceValue < 99 || priceValue > 150000000)) return null;
 
         if (isReverseCalculation) {
             // Hitung harga awal dari harga bersih yang diinginkan
@@ -292,8 +290,6 @@ export function ShopeeCalculator() {
                                             : "Harga Awal"
                                     }
                                     placeholder="Contoh: 100.000"
-                                    min={isReverseCalculation ? undefined : 99}
-                                    max={isReverseCalculation ? undefined : 150000000}
                                 />
                                 {/* Compact copy button for Hitung Harga Bersih mode */}
                                 {!isReverseCalculation &&

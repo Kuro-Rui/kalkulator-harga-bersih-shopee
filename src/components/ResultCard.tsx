@@ -86,43 +86,43 @@ export function ResultCard({
         );
     }
 
-    // Untuk mode Hitung Harga Awal, cek apakah input lebih kecil dari minimal yang bisa dicapai
-    const isBelowMinimum =
-        isReverseCalculation &&
-        minPossibleNetPrice !== undefined &&
-        desiredNetPrice < minPossibleNetPrice;
-
-    // Tampilkan error jika harga bersih yang diinginkan lebih kecil dari minimal
+    const isBelowMinimum = isReverseCalculation
+        ? minPossibleNetPrice !== undefined && desiredNetPrice < minPossibleNetPrice
+        : result.initialPrice < 99;
     if (isBelowMinimum) {
         return (
             <div className="rounded-2xl border-2 border-destructive/50 bg-destructive/5 p-6 text-center">
                 <AlertCircle className="w-12 h-12 mx-auto text-destructive mb-3" />
                 <p className="text-destructive font-semibold mb-1">
-                    Harga bersih tidak dapat dicapai
+                    {isReverseCalculation
+                        ? "Harga bersih tidak dapat dicapai"
+                        : "Harga awal terlalu rendah"}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                    Minimal total penghasilan {formatRupiah(minPossibleNetPrice!)}
+                    {isReverseCalculation
+                        ? `Total penghasilan minimal ${formatRupiah(minPossibleNetPrice!)}`
+                        : "Harga awal minimal Rp99"}
                 </p>
             </div>
         );
     }
 
-    // Untuk mode Hitung Harga Awal, cek apakah input melebihi batas maksimum
-    const isAboveMaximum =
-        isReverseCalculation &&
-        maxPossibleNetPrice !== undefined &&
-        desiredNetPrice > maxPossibleNetPrice;
-
-    // Tampilkan error jika harga bersih yang diinginkan melebihi maksimum
+    const isAboveMaximum = isReverseCalculation
+        ? maxPossibleNetPrice !== undefined && desiredNetPrice > maxPossibleNetPrice
+        : result.initialPrice > 150000000;
     if (isAboveMaximum) {
         return (
             <div className="rounded-2xl border-2 border-destructive/50 bg-destructive/5 p-6 text-center">
                 <AlertCircle className="w-12 h-12 mx-auto text-destructive mb-3" />
                 <p className="text-destructive font-semibold mb-1">
-                    Harga bersih melebihi batas maksimum
+                    {isReverseCalculation
+                        ? "Harga bersih melebihi batas maksimum"
+                        : "Harga awal terlalu tinggi"}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                    Maksimal total penghasilan adalah {formatRupiah(maxPossibleNetPrice!)}
+                    {isReverseCalculation
+                        ? `Total penghasilan maksimal ${formatRupiah(maxPossibleNetPrice!)}`
+                        : "Harga awal maksimal Rp150.000.000"}
                 </p>
             </div>
         );

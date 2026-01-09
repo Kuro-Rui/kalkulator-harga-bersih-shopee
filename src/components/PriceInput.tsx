@@ -7,8 +7,6 @@ interface PriceInputProps {
     label: string;
     placeholder?: string;
     className?: string;
-    min?: number;
-    max?: number;
 }
 
 export function PriceInput({
@@ -17,8 +15,6 @@ export function PriceInput({
     label,
     placeholder = "Masukkan harga...",
     className,
-    min,
-    max,
 }: PriceInputProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
@@ -56,24 +52,6 @@ export function PriceInput({
         return (value < 0 ? "-" : "") + Math.abs(value).toLocaleString("id-ID");
     })();
 
-    const isOutOfRange = (() => {
-        if (value === null || value === -0.001) return false;
-        if (min !== undefined && value < min) return true;
-        if (max !== undefined && value > max) return true;
-        return false;
-    })();
-
-    const errorMessage = (() => {
-        if (value === null || value === -0.001) return null;
-        if (min !== undefined && value < min) {
-            return `Harga minimal Rp${min.toLocaleString("id-ID")}`;
-        }
-        if (max !== undefined && value > max) {
-            return `Harga maksimal Rp${max.toLocaleString("id-ID")}`;
-        }
-        return null;
-    })();
-
     return (
         <div className={cn("space-y-3", className)}>
             <label className="block text-sm font-semibold text-foreground">{label}</label>
@@ -89,11 +67,9 @@ export function PriceInput({
                     placeholder={placeholder}
                     className={cn(
                         "h-14 pl-12 pr-4 text-lg font-semibold bg-card border-2 border-border hover:border-primary/50 focus:border-primary input-glow transition-colors",
-                        isOutOfRange && "border-destructive focus:border-destructive",
                     )}
                 />
             </div>
-            {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
         </div>
     );
 }
